@@ -1,24 +1,24 @@
-const calculation= [];
-
 $(document).ready(onReady);
 
 
 function onReady(){
 console.log('jquery loaded');
 
-//$('#add').on('click', additionField);
-//$('#subtract').on('click', subtractField); 
-//$('#multiply').on('click', multiplyField); 
-//$('#divide').on('click', divideField);
 $('#equalsBtn').on('click', getInput);
-$('#clearBtn').on('click', operatorField);
+$('#clearBtn').on('click', clearInput);
 $('.operator').on('click',operatorField); 
 
 getCalculation();
 
 }
+function clearInput(){
+    $('#valueOne').val(''),
+    $('#valueTwo').val('')
 
+}
 let operator = ''; 
+// to target the operator buttons 
+
 function operatorField(){
 operator=$(this).text();
 }
@@ -52,17 +52,17 @@ $.ajax({
     url: '/calculation'
 }).then( function( response ){
     console.log(response)
-    // appendToDom(response);
+    // appendToDom;
     let el = $( '#calculatePast' );
     el.empty();
-    // loop through response
+    // loop through my responsees
  for( let i = 0; i < response.length; i++){
         // display each item on DOM
         el.append( `
         <li>${response[i].valueOne} ${response[i].operator} ${response[i].valueTwo} = ${response[i].answer}</li>
         `)
-} // end for
-let answer =$('#calculatePast');
+} 
+let answer =$('#answerField');
 answer.empty();
  if(response.length === 0){
     return false;
