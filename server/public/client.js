@@ -16,8 +16,7 @@ function clearInput(){
     $('#valueTwo').val('')
 
 }
-let operator = ''; 
-// to target the operator buttons 
+let operator = '';  
 
 function operatorField(){
 operator=$(this).text();
@@ -52,7 +51,7 @@ $.ajax({
     url: '/calculation'
 }).then( function( response ){
     console.log(response)
-    // appendToDom;
+    // appendToDom
     let el = $( '#calculatePast' );
     el.empty();
     // loop through my responsees
