@@ -7,15 +7,19 @@ app.use(express.static('server/public'));
 app.use(bodyParser.urlencoded({ extended:true}));
 app.use(bodyParser.json());
 
-let calcultion= []
+const calcultion = []
+
+
 
 app.get('/calculation', (req,res) => {
     console.log('in /calculation GET');
+    res.send(calcultion)
 });
 
 app.post('/calculation', (req, res)=> {
     console.log('in /calculation POST:', req.body);
 })
+
 
 
 
