@@ -4,75 +4,95 @@ $(document).ready(onReady);
 function onReady(){
 console.log('jquery loaded');
 
-$('#equalsBtn').on('click', getInput);
-$('#clearBtn').on('click', clearInput);
-$('.operator').on('click',operatorField); 
+$(document).on(`click`, `.operatorBtn`, getOperator);
+$(document).on(`click`, `#calculateBtn`, operatorField);
+// $(document).on(`click`, `.clearBtn`, clearInputs);
 
-getCalculation();
 
-}
-function clearInput(){
-    $('#valueOne').val(''),
-    $('#valueTwo').val('')
+// getCalculation();
 
 }
-let operator = '';  
+
+let operator;  
+function getOperator(){
+    operator = $(this).data("operator");
+    console.log('in our operator', operator);
+}
 
 function operatorField(){
-operator=$(this).text();
-}
-
-function getInput(){
-    if($('#valueOne').val() === '' || $('#valueTwo').val() === '') return;
-    let obejectsThrough= {
-        valueOne: Number($('#valueOne').val()),
-        valueTwo: Number($('#valueTwo').val()),
-        operator: operator, 
-        answer: ''
-    } 
-console.log('in the getInput',obejectsThrough)
+console.log("in addCalculation");
+  if (
+    $(`#valueOne`) === "" ||
+    $(`#valueTwo`) === "" ||
+    operator === undefined
+  ) {
+    alert("failed to add operators");
+    return false;
+  } else {
+    let newOutput = {
+    valueOne: $(`#valueOne`).val(),
+    operator: operator,
+    valueTwo: $(`#valueTwo`).val(),
+    solution: null,
+    }; 
+    console.log('send this to', newOutput);
+    $(`#valueOne`).val("");
+    $(`#valueTwo`).val("");
+    operator = undefined; 
     $.ajax({
-    type: 'POST',
-    url: '/calculation', 
-    data: obejectsThrough
- }).then(function(response){
-     console.log(response); 
-     getCalculation(); 
- }).catch(function(err){
-     alert('woah!error! try again later');
-     console.log(err);
- })
-
+      method: `POST`, 
+      url: "/calculation", 
+      data: newOutput, 
+    })
+      .then(function (response) {
+        console.log('bingooo', response);
+        getCalculation(); 
+      })
+      .catch(function (err) {
+        alert('error miss girl');
+        console.log(err); 
+      });
+  }
 }
+// end of Post
+
+
+// function getInput()
+    
 
 function getCalculation(){
-$.ajax({
-    type: 'GET',
-    url: '/calculation'
-}).then( function( response ){
-    console.log(response)
-    // appendToDom
-    let el = $( '#calculatePast' );
-    el.empty();
-    // loop through my responsees
- for( let i = 0; i < response.length; i++){
-        // display each item on DOM
-        el.append( `
-        <li>${response[i].valueOne} ${response[i].operator} ${response[i].valueTwo} = ${response[i].answer}</li>
-        `)
-} 
-let answer =$('#answerField');
-answer.empty();
- if(response.length === 0){
-    return false;
- }else{
-    answer.append(`${response[0].answer}`)
-}
+    $(`#calculatorHistory`).empty();
+  $.ajax({
+    type: `GET`,
+    url: `/calculator`,
+  })
+    .then(function (response) {
+      console.log('get function', response);
+      for (let item of response) {
+        $(`#calculatePast`).empty();
+        $(`#calculatePast`).append(`
+        ${item.solution}
+        `);
+      }
+      for (let i = 0; i < response.length; i++) {
+        let item = response[i];
+        $("#calculatePast").prepend(`
+            <li>
+            ${item.valueOne}
+            ${item.operator}
+            ${item.valueTwo}
+            =
+            ${item.solution}
+            </li>
+            `);
+      }
+    })
+    .catch(function (err) {
+      console.log(err);
+      alert('error in get');
+    });
+} // end of GET
 
-//appendToDom();
-}).catch( function( err ){
-    alert( 'error getting calculation try again later' );
-    console.log( err );
-})
 
-}
+
+// function clearInfo()

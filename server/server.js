@@ -8,39 +8,32 @@ app.use(express.static('server/public'));
 app.use(bodyParser.urlencoded({ extended:true}));
 app.use(bodyParser.json());
 
-const myCalcultion = [];
+let calculation = [];
 
-
-function Whatcalculation(){
-    if(myCalcultion[0].operator === '+'){
-        myCalcultion[0].answer = (Number(myCalcultion[0].valueOne)) + (Number(myCalcultion[0].valueTwo));
-    }else if(myCalcultion[0].operator === '-'){
-        myCalcultion[0].answer = (Number(myCalcultion[0].valueOne)) - (Number(myCalcultion[0].valueTwo));
-    }else if(myCalcultion[0].operator === '/'){
-        myCalcultion[0].answer = (Number(myCalcultion[0].valueOne)) / (Number(myCalcultion[0].valueTwo));
-    }else if(myCalcultion[0].operator === '*'){
-        myCalcultion[0].answer = (Number(myCalcultion[0].valueOne)) * (Number(myCalcultion[0].valueTwo));
-    }
-}
-
-
-
-
-
-
-app.get('/calculation', (req,res) => {
-    console.log('in /calculation GET');
-    res.send(myCalcultion);
-});
-
-app.post('/calculation', (req, res)=> {
-    console.log('in /calculation POST:', req.body);
-    myCalcultion.unshift(req.body); 
-    Whatcalculation();
-    res.sendStatus(201);
+app.get( '/calculator', (req, res ) => { 
+    console.log('works in GET'); 
+    res.send( calculation )
 })
 
-
+app.post( '/calculation', (req, res) => {
+    console.log(req.body);
+    let request = req.body; 
+    if (request.operator === '+') { 
+    request.solution = Number(request.valueOne) + Number(request.valueTwo);
+    } 
+    else if (request.operator === "-") {
+    request.solution = Number(request.valueOne) - Number(request.valueTwo);
+    }
+    else if (request.operator === "*") {
+    request.solution = Number(request.valueOne) * Number(request.valueTwo);
+    }
+    else if (request.operator === "/") {
+        request.solution = Number(request.valueOne) / Number(request.valueTwo);    
+    }
+    console.log('post updates', request);
+    calculation.push(request); 
+    res.sendStatus(200); 
+   }) // end post
 
 
 
